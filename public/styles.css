@@ -1,0 +1,25 @@
+.nav-item:hover {
+    background-color: #0d6efd;
+}
+
+.nav-link:hover {
+    color: white;
+}
+
+.navbar-brand:hover {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card {
+    margin: 30px;
+}
+
+.padRight {
+    padding-right: 30px;
+}
+

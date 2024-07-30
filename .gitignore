@@ -1,0 +1,15 @@
+# Ignore the firebase.js file to protect my firebase configuration info
+/public/firebase.js
+
+# Node.js dependencies
+node_modules/
+npm-debug.log
+
+# Logs
+Logs*.log
+
+# Environment variables
+.env
+
+# MacOS system files
+.DS_Store

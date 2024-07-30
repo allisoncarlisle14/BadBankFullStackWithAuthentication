@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bad Bank</title>
+
+    <!-- transpiler (don't use this in production): -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- bootstrap css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+    crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+
+    <script src = "https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
+    <script src = "https://www.gstatic.com/firebasejs/7.24.0/firebase-auth.js"></script>
+
+ 
+    
+  </head>
+  <body>
+    <!-- we will put our react component inside this div -->
+    <div id = 'root'></div>
+
+    <!-- load react and router libraries -->
+    <script src="https://unpkg.com/react/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-router@5.2.1/umd/react-router.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-router-dom@5.2.1/umd/react-router-dom.min.js" crossorigin></script>
+
+   
+    <!-- load our react components -->
+    <script src = "context.js" defer type = "text/babel"></script>
+    <script src = "navbar.js" defer type = "text/babel"></script>
+    <script src = "formTemplate.js" defer type = "text/babel"></script>
+    <script src = "createaccount.js" defer type = "text/babel"></script>
+    <script src = "login.js" defer type = "text/babel"></script>
+    <script src = "deposit.js" defer type = "text/babel"></script>
+    <script src = "withdraw.js" defer type = "text/babel"></script>
+    <script src = "balance.js" defer type = "text/babel"></script>
+    <script src = "alldata.js" defer type = "text/babel"></script>
+    <script src = "adddata.js" defer type = "text/babel"></script>
+    <script src = "datatable.js" defer type = "text/babel"></script>
+    <script src = "home.js" defer type = "text/babel"></script>
+    <script src = "index.js" defer type = "text/babel"></script>
+    <script src = "firebase.js" defer type = "text/babel"></script>
+    
+   
+  </body>
+</html>
