@@ -67,6 +67,7 @@ function Deposit() {
 
   const formMessages = [
     "Your account balance is $" + ctx.currentUser.balance + ".",
+    "Success! Click the button to refresh the form."
   ];
 
   return (

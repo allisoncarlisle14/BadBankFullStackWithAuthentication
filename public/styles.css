@@ -1,15 +1,57 @@
-.nav-item:hover {
+
+.nav-link:hover, .navbar-brand:hover, nav-link dropdown-toggle:hover {
+    color: white;
     background-color: #0d6efd;
+    border-radius: 5px;
+    position: relative;
+
 }
 
-.nav-link:hover {
-    color: white;
+.homepage-tooltip-text {
+    visibility: hidden;
+    width: 150px;
+    background-color: rgba(255, 255, 0, 0.384);
+    color: black;
+    font-size: 12px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: -80%;
+    left: 50%;
+    margin-left: -75px;
 }
 
-.navbar-brand:hover {
-    background-color: #0d6efd;
-    color: white;
+.navtab-tooltip-text {
+    visibility: hidden;
+    width: 250px;
+    background-color: rgba(255, 255, 0, 0.384);
+    color: black;
+    font-size: 12px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: -80%;
+    left: 50%;
+    margin-left: -125px;
 }
+
+.navbar-brand:hover .homepage-tooltip-text {
+    visibility: visible;
+}
+
+.nav-link:hover .navtab-tooltip-text {
+    visibility: visible;
+}
+
+.dropdown-item:hover {
+    color: black;
+    background-color: rgba(255, 0, 0, 0.594);
+}
+
 
 .card-body {
     padding: 20px;
@@ -20,6 +62,11 @@
 }
 
 .padRight {
-    padding-right: 30px;
+    padding-right: 50px;
 }
+
+.padLeft {
+    padding-left: 50px;
+}
+
 

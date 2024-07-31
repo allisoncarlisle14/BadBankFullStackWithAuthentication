@@ -6,14 +6,15 @@ function Withdraw() {
   const ctx = React.useContext(UserContext);
   
 
-  function validate(field, label) {
-    if (Number(field) <= 0 || Number(field) > ctx.currentUser.balance) {
-      setStatus("Error: " + label);
+  function validate(field) {
+    if (Number(field) <= 0 || isNaN(field)) {
+      setStatus("Error: You must enter a positive number.");
       setTimeout(() => setStatus(""), 5000);
       return false;
     }
-    if (isNaN(field)) {
-      setStatus("Error: " + label);
+    if (Number(field) > ctx.currentUser.balance) {
+      setStatus("Error: That's more money than you have in your account!");
+      setTimeout(() => setStatus(""), 5000);
       return false;
     }
 
@@ -27,7 +28,7 @@ function Withdraw() {
 
   function handle() {
     setStatus("");
-    if (!validate(withdraw, "Please enter a valid amount.")) return;
+    if (!validate(withdraw)) return;
     let numberWithdraw = Number(withdraw);
     ctx.currentUser.balance -= numberWithdraw;
     const url = `/account/withdraw/${ctx.currentUser.email}/${numberWithdraw}`;
@@ -67,7 +68,7 @@ function Withdraw() {
 
   const formMessages = [
     "Your account balance is $" + ctx.currentUser.balance + ".",
-    "Make another withdraw.",
+    "Success! Click the button to refresh the form."
   ];
 
   return (

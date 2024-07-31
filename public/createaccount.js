@@ -54,26 +54,6 @@ function CreateAccount() {
     );
   }
 
-  function toggleNavTabs(status, user) {
-    if (status === 'loggedOut') {
-      loggedOutNavTabs.forEach(tab => document.getElementById(tab).style.display ='inline');
-      userNavTabs.forEach(tab => document.getElementById(tab).style.display = 'none');
-      document.getElementById('navbarDropdown').innerHTML = '';
-      if (!document.getElementById('all-data').style.display === 'none') {
-        document.getElementById('all-data').style.display = 'none';
-    }
-  } else if (status === 'loggedIn') {
-    loggedOutNavTabs.forEach(tab => document.getElementById(tab).style.display = 'none');
-    userNavTabs.forEach(tab => document.getElementById(tab).style.display = 'inline');
-    document.getElementById('navbarDropdown').innerHTML = user;
-  }
-}
-
-// function createFirebaseUser () {
-//   const auth = firebase.auth();
-//   const promise = auth.createUserWithEmailAndPassword(email, password);
-//   promise.catch(e => console.log(e.message));
-// }
 
   function handle() {
     setStatus("");
@@ -94,7 +74,7 @@ function CreateAccount() {
         console.log(data);
         if (data.valid) {
           ctx.currentUser = {name, email, password, balance: 0};
-          toggleNavTabs('loggedIn', name);
+          document.getElementById('navbarDropdown').innerHTML = name;
           setShow(false);
         } else {
           setStatus('An error occured: ' + data.response);
@@ -106,14 +86,27 @@ function CreateAccount() {
         console.log('Error Message: ' + error.message);
         setStatus(error.message);
       })
+    
   };
 
   function clearForm() {
     setName("");
     setEmail("");
     setPassword("");
-    setShow(true);
-    toggleNavTabs('loggedOut', '');
+    ctx.currentUser = {name: "",
+      email: "",
+      password: "",
+      balance: 0
+    };
+    firebase.auth().signOut()
+      .then ( () => {
+        console.log('Successfully signed out.');
+        setShow(true);
+      })
+      .catch ( (error) => {
+        console.log('Error code: ' + error.code);
+        console.log('Error message: ' + error.message);
+      })
   }
   
 
@@ -147,9 +140,6 @@ function CreateAccount() {
     "Enter your name, email address, and password to create an account.",
     "Success! You are now signed in as " + name,
   ];
-
-  const loggedOutNavTabs = ['create-account', 'login'];
-  const userNavTabs = ['deposit', 'withdraw', 'username', 'balance'];
   
 
   return (

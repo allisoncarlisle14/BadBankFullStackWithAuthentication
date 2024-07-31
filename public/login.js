@@ -40,24 +40,22 @@ function Login() {
         !document.getElementById("password").value
     );
   }
-  
-  function toggleNavTabs(status, user) {
-    if (status === 'loggedOut') {
-      loggedOutNavTabs.forEach(tab => document.getElementById(tab).style.display ='inline');
-      userNavTabs.forEach(tab => document.getElementById(tab).style.display = 'none');
-      document.getElementById('navbarDropdown').innerHTML = '';
-      if (!document.getElementById('all-data').style.display === 'none') {
-        document.getElementById('all-data').style.display = 'none';
-    }
-  } else if (status === 'loggedIn') {
+
+firebase.auth().onAuthStateChanged ( firebaseUser => {
+  if (firebaseUser) {
     loggedOutNavTabs.forEach(tab => document.getElementById(tab).style.display = 'none');
     userNavTabs.forEach(tab => document.getElementById(tab).style.display = 'inline');
-    document.getElementById('navbarDropdown').innerHTML = user;
-    if (email === 'griphook@gringotts.com') {
+    
+    if (firebaseUser.email === 'griphook@gringotts.com') {
       document.getElementById('all-data').style.display = 'inline';
-      }
+    }
+  } else {
+    loggedOutNavTabs.forEach(tab => document.getElementById(tab).style.display ='inline');
+      userNavTabs.forEach(tab => document.getElementById(tab).style.display = 'none');
+      document.getElementById('navbarDropdown').innerHTML = '';
+      document.getElementById('all-data').style.display = 'none';
   }
-}
+})
 
 function updateCtxCurrentUser (response) {
   ctx.currentUser.name = response.name;
@@ -65,22 +63,6 @@ function updateCtxCurrentUser (response) {
   ctx.currentUser.password = response.password;
   ctx.currentUser.balance = response.balance;
 }
-
-// function IsFirebaseUser () {
-//   const auth = firebase.auth();
-//   // const promise = auth.signInWithEmailAndPassword(email, password)
-//   // promise.catch(e => console.log(e.message));
-//   auth.signInWithEmailAndPassword(email, password)
-//     .then( (userCredential) => {
-//       console.log(userCredential.user);
-//       return true;
-//     })
-//     .catch((error) => {
-//       console.log('Error Code: ' + error.code);
-//       console.log('Error Message: ' + error.message);
-//       return false;
-//     })
-// }
 
   function handle() {
     setStatus("");
@@ -99,7 +81,8 @@ function updateCtxCurrentUser (response) {
           updateCtxCurrentUser(data.response);
           setName(data.response.name);
           setShow(false);
-          toggleNavTabs('loggedIn', data.response.name);
+          document.getElementById('navbarDropdown').innerHTML = data.response.name;
+         
         } else {
           setStatus('An error occured: ' + data.response);
         }
@@ -125,7 +108,6 @@ function updateCtxCurrentUser (response) {
     firebase.auth().signOut()
       .then ( () => {
         console.log('Successfully signed out.');
-        toggleNavTabs('loggedOut', '');
         setShow(true);
       })
       .catch ( (error) => {
