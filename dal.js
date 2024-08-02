@@ -101,6 +101,24 @@ async function balance(email) {
   };
 }
 
+async function deleteAccount(email) {
+  const customerArray = await customers.find({ email }).toArray();
+  if (customerArray.length === 0) {
+    return {valid: false, response: 'There is no account associated with that email address.'}}
+  else {
+  const customer = customerArray[0];
+  const balance = Number(customer.balance);
+
+  if (balance === 0) {
+    await customers.deleteOne({email});
+    return {valid: true, response: "Success! Your account has been closed. We retain a record of your transaction history."}
+  }
+    else {
+      return {valid: false, response: "You must empty your account first!"}
+    }
+  }
+}
+
 async function allCustomers() {
   const findResult = await customers.find({}).toArray();
   console.log("Found documents =>", findResult);
@@ -114,4 +132,4 @@ async function allTransactions() {
 }
 
 
-module.exports = { create, login, deposit, withdraw, balance, allCustomers, allTransactions };
+module.exports = { create, login, deposit, withdraw, balance, deleteAccount, allCustomers, allTransactions };

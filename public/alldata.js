@@ -47,8 +47,8 @@ function AllData() {
   };
 
   const transactionData = {
-    bgcolor: "white",
-    txtcolor: "primary",
+    bgcolor: "info",
+    txtcolor: "white",
     header: "All Transation Data",
     title: "User Data",
     text: "Here is a history of user transactions from most to least recent.",

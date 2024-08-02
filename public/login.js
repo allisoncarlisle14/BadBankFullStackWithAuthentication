@@ -138,7 +138,7 @@ function updateCtxCurrentUser (response) {
   const formMessages = ["Welcome.", "Welcome, " + name + "."];
 
   const loggedOutNavTabs = ['create-account', 'login'];
-  const userNavTabs = ['deposit', 'withdraw', 'username', 'balance'];
+  const userNavTabs = ['deposit', 'withdraw', 'username', 'balance', 'delete-account'];
 
   return (
     <>

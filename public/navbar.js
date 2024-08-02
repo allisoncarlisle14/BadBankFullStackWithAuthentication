@@ -32,7 +32,7 @@ function NavBar() {
 
   }
 
-  const navLinkIds = ['home-link', 'create-account-link', 'login-link', 'deposit-link', 'withdraw-link', 'balance-link', 'all-data-link'];
+  const navLinkIds = ['home-link', 'create-account-link', 'login-link', 'deposit-link', 'withdraw-link', 'balance-link', 'delete-account-link', 'all-data-link'];
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -82,6 +82,12 @@ function NavBar() {
               <a className="nav-link" id = "balance-link" href="#balance" style = {{borderRadius: '5px'}} onClick = {e => setActiveTab(e)}>
                 Balance
                 <span className = "navtab-tooltip-text"> Check your account balance. </span>
+              </a>
+            </li>
+            <li className="nav-item" id = "delete-account" style = {{ display: "none" }}>
+              <a className="nav-link" id = "delete-account-link" href="#DeleteAccount" style = {{borderRadius: '5px'}} onClick = {e => setActiveTab(e)}>
+                Delete Account
+                <span className = "navtab-tooltip-text"> Close your account with Bad Bank. </span>
               </a>
             </li>
             <li className="nav-item" id = "all-data" style = {{ display: "none" }}>

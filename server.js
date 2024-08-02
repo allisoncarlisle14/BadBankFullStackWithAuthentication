@@ -13,7 +13,6 @@ app.get("/account/create/:name/:email/:password", async function (req, res) {
   res.send(response);
 });
 
-
 // login
 app.get("/account/login/:email/:password", async function (req, res) {
   let response = await dal.login(req.params.email, req.params.password);
@@ -32,10 +31,15 @@ app.get("/account/withdraw/:email/:amount", async function (req, res) {
     res.send(result);
   });
   
-
 // balance
 app.get("/account/balance/:email", async function (req, res) {
    let response = await dal.balance(req.params.email);
+  res.send(response);
+});
+
+// delete account
+app.get("/account/delete/:email", async function (req, res) {
+  let response = await dal.deleteAccount(req.params.email);
   res.send(response);
 });
 

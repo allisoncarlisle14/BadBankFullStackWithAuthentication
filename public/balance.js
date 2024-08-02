@@ -70,7 +70,8 @@ function Balance() {
     return (
     <>
       <Card
-        bgcolor="dark"
+        bgcolor="info"
+        txtcolor= "white"
         header="Balance"
         text={
           ''

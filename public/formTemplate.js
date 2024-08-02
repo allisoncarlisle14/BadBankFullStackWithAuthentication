@@ -28,13 +28,18 @@ function FormTemplate(props) {
         {props.submitButtonLabels[0]}{" "}
       </button>
     </>
-  ) : (
+  ) : (props.href ? (
     <>
       <h5> {props.formMessages[1]} </h5>
       <button type="submit" className="btn btn-light" onClick={props.onClear}>
-        {" "}
-        {props.submitButtonLabels[1]}{" "}
+        {" "} 
+        <a className = "nav-link" href = {props.href}> {props.submitButtonLabels[1]}{" "} </a>
       </button>
-    </>
-  );
+    </>) :
+      <>
+      <h5> {props.formMessages[1]} </h5>
+      <button type="submit" className="btn btn-light" onClick={props.onClear}>
+        {" "} {props.submitButtonLabels[1]} {" "}
+      </button>
+    </>)
 }
