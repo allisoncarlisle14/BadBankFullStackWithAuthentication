@@ -62,7 +62,6 @@ function CreateAccount() {
     if (!validateEmail(email)) return;
     if (!validatePassword(password)) {return};
 
-    // createFirebaseUser();
     const auth = firebase.auth();
     auth.createUserWithEmailAndPassword(email, password)
       .then ((userCredential) => {

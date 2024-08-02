@@ -3,7 +3,7 @@ var app = express();
 var cors = require("cors");
 var dal = require("./dal.js");
 
-// this tells the app to server static files from the public directory
+// this tells the app to serve static files from the public directory
 app.use(express.static("public"));
 app.use(cors());
 
@@ -39,17 +39,30 @@ app.get("/account/balance/:email", async function (req, res) {
   res.send(response);
 });
 
-// all data
+// all customers
 app.get("/account/all", async function (req, res) {
     console.log('attempting to get all data');
     try {
-  const docs = await dal.all();
-  console.log('Data sent to client', docs);
-  res.send(docs);
+  const customers = await dal.allCustomers();
+  console.log('Data sent to client', customers);
+  res.send(customers);
     } catch (err) {
         console.log('Error fetching data', err);
         res.status(500).send('Error fetching data');
     }
+});
+
+// all transactions
+app.get("/transactions/all", async function (req, res) {
+  console.log('attempting to get all data');
+  try {
+const transactions = await dal.allTransactions();
+console.log('Data sent to client', transactions);
+res.send(transactions);
+  } catch (err) {
+      console.log('Error fetching data', err);
+      res.status(500).send('Error fetching data');
+  }
 });
 
 const port = 3000;

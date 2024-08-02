@@ -7,7 +7,6 @@ function AddData(props) {
       <td> {Object.values(entry)[1]} </td>
       <td> {Object.values(entry)[2]} </td>
       <td> {Object.values(entry)[3]} </td>
-      <td> {Object.values(entry)[4]} </td>
     </tr>
     
   ));

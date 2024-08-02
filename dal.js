@@ -8,15 +8,16 @@ const client = new MongoClient(url);
 const dbName = "myProject";
 
 let db = null;
-let collection = null;
+let customers = null;
+let transactions = null;
 
 async function main() {
   // Use connect method to connect to the server
   await client.connect();
   console.log("Connected successfully to server");
   db = client.db(dbName);
-  collection = db.collection("users");
-
+  customers = db.collection("users");
+  transactions = db.collection("transactions");
   return "done.";
 }
 
@@ -25,10 +26,10 @@ main().then(console.log).catch(console.error);
 
 async function create(name, email, password) {
   const doc = { name, email, password, balance: 0 };
-  const customerArray = await collection.find({ email }).toArray();
+  const customerArray = await customers.find({ email }).toArray();
   if (customerArray.length === 0) {
-  await collection.insertOne(doc);
-  const newCustomer = await collection.find({ email }).toArray();
+  await customers.insertOne(doc);
+  const newCustomer = await customers.find({ email }).toArray();
   console.log("Customer inserted", newCustomer);
   return {valid: true, response: newCustomer}}
   else {
@@ -37,7 +38,7 @@ async function create(name, email, password) {
 }
 
 async function login(email, password) {
-  const customerArray = await collection.find({ email, password }).toArray();
+  const customerArray = await customers.find({ email, password }).toArray();
   if (customerArray.length === 0) {
   return {valid: false, response: 'The email address and password you have entered are incorrect.'}}
   else {
@@ -47,29 +48,40 @@ async function login(email, password) {
 }
 
 async function deposit(email, amount) {
-  const customerArray = await collection.find({ email }).toArray();
+  // updating customer's balance in the database
+  const customerArray = await customers.find({ email }).toArray();
   const customer = customerArray[0];
-  console.log('the customer is' + JSON.stringify(customer));
+
   const previousBalance = Number(customer.balance);
-  console.log('the previous balance was' + previousBalance);
+
   const newBalance = previousBalance + Number(amount);
-  console.log('the new balance is' + newBalance);
-  const updateResult = await collection.updateOne({email}, {$set: {balance: newBalance}});
-  console.log('Updated documents', updateResult);
+
+  const updateResult = await customers.updateOne({email}, {$set: {balance: newBalance}});
+
+  // updating transactions in the database
+  const name = customer.name;
+ 
+  const transaction = {name, type: 'deposit', amount, newBalance};
+  await transactions.insertOne(transaction);
   return updateResult;
 }
 
 async function withdraw(email, amount) {
-  const customerArray = await collection.find({ email }).toArray();
+  const customerArray = await customers.find({ email }).toArray();
   const customer = customerArray[0];
-  console.log('the customer is' + JSON.stringify(customer));
+ 
   const previousBalance = Number(customer.balance);
-  console.log('the previous balance was' + previousBalance);
+
   if (Number(amount) <= previousBalance) {
   const newBalance = previousBalance - Number(amount);
-  console.log('the new balance is' + newBalance);
-  const updateResult = await collection.updateOne({email}, {$set: {balance: newBalance}});
-  console.log('Updated documents', updateResult);
+
+  const updateResult = await customers.updateOne({email}, {$set: {balance: newBalance}});
+ 
+  const name = customer.name;
+
+  const transaction = {name, type: 'withdraw', amount, newBalance};
+  await transactions.insertOne(transaction);
+
   return updateResult;}
   else {
     return "You can't withdraw more money than you have in your account!"
@@ -77,7 +89,7 @@ async function withdraw(email, amount) {
 }
 
 async function balance(email) {
-  const customerArray = await collection.find({ email }).toArray();
+  const customerArray = await customers.find({ email }).toArray();
   if (customerArray.length === 0) {
     return {valid: false, response: 'There is no account associated with that email address.'}}
   else {
@@ -89,10 +101,17 @@ async function balance(email) {
   };
 }
 
-async function all() {
-  const findResult = await collection.find({}).toArray();
+async function allCustomers() {
+  const findResult = await customers.find({}).toArray();
   console.log("Found documents =>", findResult);
   return findResult;
 }
 
-module.exports = { create, login, deposit, withdraw, balance, all };
+async function allTransactions() {
+  const findResult = await transactions.find({}).toArray();
+  console.log("Found documents =>", findResult);
+  return findResult;
+}
+
+
+module.exports = { create, login, deposit, withdraw, balance, allCustomers, allTransactions };

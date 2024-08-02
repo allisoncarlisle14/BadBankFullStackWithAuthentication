@@ -32,7 +32,6 @@ function Balance() {
     (async () => {
       let res = await fetch(url);
       let data = await res.json();
-      console.log(data);
       if (data.valid) {
         setName(data.name);
         setBalance(data.balance);
