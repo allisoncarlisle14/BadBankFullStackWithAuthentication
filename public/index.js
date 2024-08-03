@@ -10,8 +10,7 @@ function Spa() {
             email: "",
             password: "",
             balance: 0
-          },
-          transactions: [],
+          }
         }}
       >
         <NavBar />

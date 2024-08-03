@@ -57,42 +57,58 @@ function CreateAccount() {
 
   function handle() {
     setStatus("");
-    console.log(name, email, password);
+   
     if (!validateName(name)) return;
     if (!validateEmail(email)) return;
     if (!validatePassword(password)) {return};
 
+    // see authentication with Firebase lecture videos and https://firebase.google.com/docs/auth/web/password-auth#create_a_password-based_account
+
     const auth = firebase.auth();
     auth.createUserWithEmailAndPassword(email, password)
-      .then ((userCredential) => {
-        console.log(userCredential.user);
+      .then( (userCredential) => {
+        console.log(userCredential.user); // console log Firebase user
 
-        const url = `/auth/account/create/${name}/${email}/${password}`;
-        (async () => {
-        let res = await fetch(url, {
-          method: 'POST'
-        });
-        let data = await res.json();
-        console.log(data);
-        if (data.valid) {
-          ctx.currentUser = {name, email, password, balance: 0};
-          document.getElementById('navbarDropdown').innerHTML = name;
-          localStorage.setItem('token', data.token);
-          setShow(false);
-        } else {
-          setStatus('An error occured: ' + data.content);
-        }
+        (async function createData () {
+          const url = `/auth/account/create/${name}/${email}/${password}`;
+
+          try {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error (`Response status: ${response.status}`);
+            }
+            const data = await response.json();
+            if (data.valid) {
+              ctx.currentUser.name = data.content.name;
+              ctx.currentUser.email = data.content.email;
+              ctx.currentUser.password = data.content.password;
+              ctx.currentUser.balance = 0;
+              console.log(data.content); // console log user in database
+              document.getElementById('navbarDropdown').innerHTML = data.content.name;
+              localStorage.setItem('token', data.token);
+              setShow(false);
+            } else {
+              setStatus('An error occurred: ' + data.content) // maybe come up with a different name than content on the back end?
+              setTimeout(() => setStatus(""), 5000);
+            }
+            
+          } catch (error) {
+            console.error(error.message); // error authenticating with the server 
+          }
         })();
       })
       .catch( (error) => {
-        console.log('Error Code: ' + error.code);
-        console.log('Error Message: ' + error.message);
-        setStatus(error.message);
+        console.error('Error Code: ' + error.code); // error authenticating with Firebase
+        console.error('Error Message: ' + error.message); // error authenticating with Firebase
+        setStatus("Firebase authentication failed.");
+        setTimeout(() => setStatus(""), 5000);
       })
     
   };
 
   function clearForm() {
+    localStorage.removeItem('token'); 
+
     setName("");
     setEmail("");
     setPassword("");
@@ -101,14 +117,17 @@ function CreateAccount() {
       password: "",
       balance: 0
     };
+
+    // see authentication with Firebase lecture videos and https://firebase.google.com/docs/auth/web/password-auth
+
     firebase.auth().signOut()
-      .then ( () => {
-        console.log('Successfully signed out.');
+      .then (() => {
+        console.log('Successfully signed out of Firebase.');
         setShow(true);
       })
       .catch ( (error) => {
-        console.log('Error code: ' + error.code);
-        console.log('Error message: ' + error.message);
+        console.error('Error code: ' + error.code); // error signing out of Firebase
+        console.error('Error message: ' + error.message); // error signing out of Firebase
       })
   }
   

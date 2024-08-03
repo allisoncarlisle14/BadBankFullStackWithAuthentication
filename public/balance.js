@@ -35,24 +35,34 @@ function Balance() {
       setStatus("Authentication error.")
       return;
     }
+    
+    // See MDN documentation https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 
-    const requestBody = {email: email, token: token}
-    const url = `/auth/account/balance`;
+    (async function getData () {
+      const requestBody = {email: email, token: token}
+      const url = `/auth/account/balance`;
 
-    (async () => {
-      let res = await fetch(url, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(requestBody)
-      });
-      let data = await res.json();
-      if (data.valid) {
-        setName(data.name);
-        setBalance(data.balance);
-        setShow(false);
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(requestBody)
+        });
+        if (!response.ok) {
+          throw new Error (`Response status: ${response.status}`);
         }
-      else {
-        setStatus('An error occured: ' + data.response);
+        const data = await response.json();
+        if (data.valid) {
+          console.log(data); // console log data
+          setName(data.name);
+          setBalance(data.balance);
+          setShow(false);
+        } else {
+          setStatus('An error occured: ' + data.response); // think about a better naming convention for an error message than response on the back end? 
+        }
+
+      } catch (error) {
+          console.error(error.message);
       }
     })();
   }
@@ -82,45 +92,45 @@ function Balance() {
 
   if (ctx.currentUser.name === 'Griphook') {
     return (
-    <>
-      <Card
-        bgcolor="info"
-        txtcolor= "white"
-        header="Balance"
-        text={
-          ''
-        }
-        status={status}
-        body={
-          <FormTemplate
-            show={show}
-            formMessages={formMessages}
-            data={inputFields}
-            onChange={change}
-            disabled={buttonDisabled}
-            onClick={handle}
-            submitButtonLabels={submitButtonLabels}
-            onClear={clearForm}
-          />
-        }
-      />
-    </>
+      <>
+        <Card
+          bgcolor="info"
+          txtcolor= "white"
+          header="Balance"
+          text={
+            ''
+          }
+          status={status}
+          body={
+            <FormTemplate
+              show={show}
+              formMessages={formMessages}
+              data={inputFields}
+              onChange={change}
+              disabled={buttonDisabled}
+              onClick={handle}
+              submitButtonLabels={submitButtonLabels}
+              onClear={clearForm}
+            />
+          }
+        />
+      </>
   )
-} else {
-  return (
-    <>
-      <Card
-        bgcolor="dark"
-        header="Balance"
-        text={
-          `Hello, ${ctx.currentUser.name}. Your account balance is $${ctx.currentUser.balance}.`
-        }
-        status={status}
-        body={
-          ''
-        }
-      />
-    </>
-  )
-}
+  } else {
+    return (
+      <>
+        <Card
+          bgcolor="dark"
+          header="Balance"
+          text={
+            `Hello, ${ctx.currentUser.name}. Your account balance is $${ctx.currentUser.balance}.`
+          }
+          status={status}
+          body={
+            ''
+          }
+        />
+      </>
+    )
+  }
 }

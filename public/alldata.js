@@ -3,9 +3,8 @@ function AllData() {
   const [accounts, setAccounts] = React.useState([]);
   const [transactions, setTransactions] = React.useState([]);
  
-
   React.useEffect( () => {
-    console.log('React Use Effect Called')
+    console.log('React Use Effect Called') // console.log('React Use Effect Called')
     // fetch all accounts from API
 
     const token = localStorage.getItem('token');
@@ -15,24 +14,32 @@ function AllData() {
       return;
     }
 
-    const requestBody = {token: token}
-    const url = `/auth/account/all`;
+    // The request body is the payload of the request (what the client sends to the server) and is passed as the body option. 
+    // See MDN documentation https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 
-
-    fetch(url, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(requestBody)
-    })
-      .then(response => response.json())
-      .then(data => {
+    (async function getData () {
+      const requestBody = {token: token};
+      const url = `/auth/account/all`;
+    // The default method is GET, but you can't include a body with GET, which is why the method is POST.
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(requestBody)
+        });
+        if (!response.ok) {
+          throw new Error (`Response status: ${response.status}`);
+        }
+        const data = await response.json();
         data.forEach(entry => delete entry._id);
-        console.log(data);
+        console.log(data); // console log data
         setAccounts(data);
-      })
-     .catch(error => console.error('Error fetching data: ', error));
-  }, []);
 
+      } catch (error) {
+        console.error(error.message);
+      }
+    })()
+  }, []);
 
   React.useEffect( () => {
     console.log('React Use Effect Called')
@@ -45,25 +52,29 @@ function AllData() {
       return;
     }
 
-    const requestBody = {token: token}
-    const url = `/auth/transactions/all`;
+    (async function getData () {
+      const requestBody = {token: token}
+      const url = `/auth/transactions/all`;
 
-
-    fetch(url, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(requestBody)
-    })
-      .then(response => response.json())
-      .then(data => {
-        data.reverse();
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(requestBody)
+        });
+        if (!response.ok) {
+          throw new Error (`Response status: ${response.status}`);
+        }
+        const data = await response.json();
         data.forEach(entry => delete entry._id);
-        console.log(data);
+        console.log(data); // console log data
         setTransactions(data);
-      })
-     .catch(error => console.error('Error fetching data: ', error));
-  }, []);
 
+      } catch (error) {
+        console.error(error.message);
+      }
+    })()
+  }, []);
 
   const userData = {
     bgcolor: "info",

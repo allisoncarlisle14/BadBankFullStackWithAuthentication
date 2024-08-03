@@ -28,9 +28,9 @@ function Withdraw() {
 
   function handle() {
     setStatus("");
+
     if (!validate(withdraw)) return;
     let numberWithdraw = Number(withdraw);
-    ctx.currentUser.balance -= numberWithdraw;
 
     const token = localStorage.getItem('token');
     if (!token) {
@@ -39,28 +39,36 @@ function Withdraw() {
       return;
     }
 
-    const requestBody = {email: ctx.currentUser.email, amount: numberWithdraw, token: token}
-    const url = `/auth/account/withdraw`;
+    // See MDN documentation https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 
-    (async () => {
-      let res = await fetch(url, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(requestBody)
-      });
-      let data = await res.json();
-      console.log(data);
+    (async function updateData () {
+      const requestBody = {email: ctx.currentUser.email, amount: numberWithdraw, token: token}
+      const url = `/auth/account/withdraw`;
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(requestBody)
+        });
+        if (!response.ok) {
+          throw new Error (`Response status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.valid) {
+          ctx.currentUser.balance = data.content.balance;
+          setShow(false);
+
+        } else {
+          // no action required because console.log(data.response), below, will console log a message whether the data is valid or not.
+        }
+        console.log(data.content); // console log data from the server.
+        
+      } catch (error) {
+        console.error(error.message); // error communicating with the server.
+      }
     })();
-
-    ctx.transactions.unshift({
-      name: ctx.currentUser.name,
-      type: "withdraw",
-      amount: withdraw,
-      updatedbalance: ctx.currentUser.balance,
-    });
-    setShow(false);
   }
-
 
   function clearForm() {
     setWithdraw(0);

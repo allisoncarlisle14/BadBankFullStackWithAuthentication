@@ -15,7 +15,6 @@ function Deposit() {
       setStatus("Error: " + label);
       return false;
     }
-
     return true;
   }
 
@@ -26,39 +25,45 @@ function Deposit() {
 
   async function handle() {
     setStatus("");
-    console.log('the current user is ', ctx.currentUser.name
-    )
+    
     if (!validate(deposit, "You must enter a positive number.")) return;
     let numberDeposit = Number(deposit);
-    ctx.currentUser.balance += numberDeposit;
+
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found.');
       setStatus("Authentication error.")
       return;
     }
-    
-    const requestBody = {email: ctx.currentUser.email, amount: numberDeposit, token: token}
-    const url = `/auth/account/deposit`;
-    
-    
-    (async () => {
-      let res = await fetch(url, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(requestBody)
-      });
-      let data = await res.json();
-      console.log(data);
-    })();
 
-    ctx.transactions.unshift({
-      name: ctx.currentUser.name,
-      type: "deposit",
-      amount: deposit,
-      updatedbalance: ctx.currentUser.balance,
-    });
-    setShow(false);
+    // See MDN documentation https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
+    (async function updateData () {
+      const requestBody = {email: ctx.currentUser.email, amount: numberDeposit, token: token}
+      const url = `/auth/account/deposit`;
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(requestBody)
+        });
+        if (!response.ok) {
+          throw new Error (`Response status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.valid) {
+          ctx.currentUser.balance = data.content.balance;
+          setShow(false);
+        
+        } else {
+          // no action required because console.log(data.response), below, will console log a message whether the data is valid or not.
+        }
+        console.log(data.content); // console log data from the server.
+      } catch (error) {
+        console.error(error.message); // error communicating with the server.
+      }
+    })();
   }
 
   function clearForm() {

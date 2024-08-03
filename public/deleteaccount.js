@@ -41,52 +41,67 @@ function DeleteAccount() {
         setStatus("Authentication error.")
         return;
       }
-    
-      const requestBody = {email: ctx.currentUser.email, token: token}
-      const url = `/auth/account/delete`;
 
-      (async () => {
-        let res = await fetch(url, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(requestBody)
-        });
-        let data = await res.json();
-        if (data.valid) {
-          setEmail("");
-          ctx.currentUser = {name: "",
-            email: "",
-            password: "",
-            balance: 0
-          };
-          setShow(false);
-          console.log(data.response);
-          const auth = firebase.auth();
-          const user = auth.currentUser;
-          user.delete()
-            .then ( () => {
-                console.log('Successfully deleted user from FireBase.');
-            })
-            .catch ( (error) => {
-            console.log('Error code: ' + error.code);
-            console.log('Error message: ' + error.message);
-        })
+      // See MDN documentation https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
+      (async function deleteData() {
+        const requestBody = {email: ctx.currentUser.email, token: token}
+        const url = `/auth/account/delete`;
+
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(requestBody)
+          });
+          if (!response.ok) {
+            throw new Error (`Response status: ${response.status}`);
+          }
+          const data = await response.json();
+          if (data.valid) {
+            setEmail("");
+            ctx.currentUser = {name: "",
+              email: "",
+              password: "",
+              balance: 0
+            };
+            setShow(false);
+
+            // see authentication with Firebase lecture videos and https://firebase.google.com/docs/auth/web/manage-users#web_23
+
+            const auth = firebase.auth();
+            const user = auth.currentUser;
+            user.delete()
+              .then (() => {
+                  console.log('Successfully deleted user from FireBase.');
+              })
+              .catch ( (error) => {
+              console.error('Error code: ' + error.code); // error deleting user from Firebase
+              console.error('Error message: ' + error.message); // error deleting user from Firebase
+              });
+          } else {
+              // no action required because console.log(data.response), below, will console log a message whether the data is valid or not.
+          }
+          console.log(data.response); // console log message from the server.
+        } catch (error) {
+          console.error(error.message); // error communicating with the server.
         }
-        setStatus(data.response);
+
       })();
     }
-  
-    function clearForm() {
-      
-      // firebase.auth().signOut()
-      //   .then ( () => {
-      //     console.log('Successfully signed out.');
-      //   })
-      //   .catch ( (error) => {
-      //     console.log('Error code: ' + error.code);
-      //     console.log('Error message: ' + error.message);
-      //   })
 
+    function clearForm() {
+      // Not necessary to sign out of Firebase because the firebase user is deleted when the first form is submitted. 
+
+      // firebase.auth().signOut()
+      // .then (() => {
+      //   console.log('Successfully signed out of Firebase.');
+      //   setShow(true);
+      // })
+      // .catch ( (error) => {
+      //   console.error('Error code: ' + error.code); // error signing out of Firebase
+      //   console.error('Error message: ' + error.message); // error signing out of Firebase
+      // })
     }
   
     const inputFields = [

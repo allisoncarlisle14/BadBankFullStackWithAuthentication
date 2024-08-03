@@ -30,8 +30,8 @@ async function create(name, email, password) {
   if (customerArray.length === 0) {
   await customers.insertOne(doc);
   const newCustomer = await customers.find({ email }).toArray();
-  console.log("Customer inserted", newCustomer);
-  return {valid: true, content: newCustomer}}
+  console.log("Customer inserted", newCustomer[0]);
+  return {valid: true, content: newCustomer[0]}}
   else {
     return ({valid: false, content: 'A customer with that email address already exists!'})
   }
@@ -50,24 +50,33 @@ async function login(email, password) {
 async function deposit(email, amount) {
   // updating customer's balance in the database
   const customerArray = await customers.find({ email }).toArray();
+  if (customerArray.length === 0) {
+    return {valid: false, content: 'There is no account associated with that email address.'}}
+  else {
   const customer = customerArray[0];
 
   const previousBalance = Number(customer.balance);
 
   const newBalance = previousBalance + Number(amount);
 
-  const updateResult = await customers.updateOne({email}, {$set: {balance: newBalance}});
+  await customers.updateOne({email}, {$set: {balance: newBalance}});
 
+  const updatedCustomerArray = await customers.find({ email }).toArray();
+  const updatedCustomer = updatedCustomerArray[0];
+  
   // updating transactions in the database
   const name = customer.name;
- 
   const transaction = {name, type: 'deposit', amount, newBalance};
   await transactions.insertOne(transaction);
-  return updateResult;
+  return {valid: true, content: updatedCustomer};
+  }
 }
 
 async function withdraw(email, amount) {
   const customerArray = await customers.find({ email }).toArray();
+  if (customerArray.length === 0) {
+    return {valid: false, content: 'There is no account associated with that email address.'}}
+  else {
   const customer = customerArray[0];
  
   const previousBalance = Number(customer.balance);
@@ -75,17 +84,22 @@ async function withdraw(email, amount) {
   if (Number(amount) <= previousBalance) {
   const newBalance = previousBalance - Number(amount);
 
-  const updateResult = await customers.updateOne({email}, {$set: {balance: newBalance}});
+  await customers.updateOne({email}, {$set: {balance: newBalance}});
+
+  const updatedCustomerArray = await customers.find({ email }).toArray();
+  const updatedCustomer = updatedCustomerArray[0];
  
   const name = customer.name;
 
   const transaction = {name, type: 'withdraw', amount, newBalance};
   await transactions.insertOne(transaction);
 
-  return updateResult;}
+  return {valid: true, content: updatedCustomer}
+}
   else {
     return "You can't withdraw more money than you have in your account!"
   }
+}
 }
 
 async function balance(email) {

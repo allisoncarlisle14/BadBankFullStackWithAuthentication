@@ -45,7 +45,7 @@ router.post("/account/create/:name/:email/:password", async function (req, res) 
 });
 
 // login
-router.post("/account/login/:email/:password", async function (req, res) {
+router.get("/account/login/:email/:password", async function (req, res) {
   let result = await dal.login(req.params.email, req.params.password);
 
   if (result.valid) {
@@ -76,8 +76,8 @@ router.post("/account/deposit", async function (req, res) {
   }
 
   req.user = decoded;
-  let user = await dal.deposit(email, amount);
-  res.send(user);
+  let result = await dal.deposit(email, amount);
+  res.send(result);
 });
 
 // withdraw
