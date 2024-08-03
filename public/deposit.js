@@ -24,16 +24,30 @@ function Deposit() {
     setButtonDisabled(!e.currentTarget.value);
   }
 
-  function handle() {
+  async function handle() {
     setStatus("");
     console.log('the current user is ', ctx.currentUser.name
     )
     if (!validate(deposit, "You must enter a positive number.")) return;
     let numberDeposit = Number(deposit);
     ctx.currentUser.balance += numberDeposit;
-    const url = `/account/deposit/${ctx.currentUser.email}/${numberDeposit}`;
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found.');
+      setStatus("Authentication error.")
+      return;
+    }
+    
+    const requestBody = {email: ctx.currentUser.email, amount: numberDeposit, token: token}
+    const url = `/auth/account/deposit`;
+    
+    
     (async () => {
-      let res = await fetch(url);
+      let res = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestBody)
+      });
       let data = await res.json();
       console.log(data);
     })();

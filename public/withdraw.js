@@ -31,9 +31,23 @@ function Withdraw() {
     if (!validate(withdraw)) return;
     let numberWithdraw = Number(withdraw);
     ctx.currentUser.balance -= numberWithdraw;
-    const url = `/account/withdraw/${ctx.currentUser.email}/${numberWithdraw}`;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found.');
+      setStatus("Authentication error.")
+      return;
+    }
+
+    const requestBody = {email: ctx.currentUser.email, amount: numberWithdraw, token: token}
+    const url = `/auth/account/withdraw`;
+
     (async () => {
-      let res = await fetch(url);
+      let res = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestBody)
+      });
       let data = await res.json();
       console.log(data);
     })();

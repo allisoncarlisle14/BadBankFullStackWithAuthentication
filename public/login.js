@@ -72,19 +72,24 @@ function updateCtxCurrentUser (response) {
     auth.signInWithEmailAndPassword(email, password)
       .then( (userCredential) => {
         console.log(userCredential.user);
-        const url = `/account/login/${email}/${password}`;
+        const url = `/auth/account/login/${email}/${password}`;
+        //const requestBody = {email: email, password: password};
         (async () => {
-        let res = await fetch(url);
+        let res = await fetch(url, {
+          method: 'POST',
+          //body: JSON.stringify(requestBody)
+        });
         let data = await res.json();
         console.log(data);
         if (data.valid) {
-          updateCtxCurrentUser(data.response);
-          setName(data.response.name);
+          updateCtxCurrentUser(data.content);
+          setName(data.content.name);
           setShow(false);
-          document.getElementById('navbarDropdown').innerHTML = data.response.name;
+          document.getElementById('navbarDropdown').innerHTML = data.content.name;
+          localStorage.setItem('token', data.token);
          
         } else {
-          setStatus('An error occured: ' + data.response);
+          setStatus('An error occured: ' + data.content);
         }
         })();
       })
@@ -96,6 +101,7 @@ function updateCtxCurrentUser (response) {
   }
 
   function clearForm() {
+    localStorage.removeItem('token');
     setName("");
     setEmail("");
     setPassword("");

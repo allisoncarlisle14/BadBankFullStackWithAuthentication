@@ -2,11 +2,28 @@ function AllData() {
 
   const [accounts, setAccounts] = React.useState([]);
   const [transactions, setTransactions] = React.useState([]);
+ 
 
   React.useEffect( () => {
     console.log('React Use Effect Called')
     // fetch all accounts from API
-    fetch('/account/all')
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found.');
+      setStatus("Authentication error.")
+      return;
+    }
+
+    const requestBody = {token: token}
+    const url = `/auth/account/all`;
+
+
+    fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(requestBody)
+    })
       .then(response => response.json())
       .then(data => {
         data.forEach(entry => delete entry._id);
@@ -20,7 +37,23 @@ function AllData() {
   React.useEffect( () => {
     console.log('React Use Effect Called')
     // fetch all transactions from API
-    fetch('/transactions/all')
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found.');
+      setStatus("Authentication error.")
+      return;
+    }
+
+    const requestBody = {token: token}
+    const url = `/auth/transactions/all`;
+
+
+    fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(requestBody)
+    })
       .then(response => response.json())
       .then(data => {
         data.reverse();

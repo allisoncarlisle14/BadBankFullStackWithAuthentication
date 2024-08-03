@@ -66,17 +66,21 @@ function CreateAccount() {
     auth.createUserWithEmailAndPassword(email, password)
       .then ((userCredential) => {
         console.log(userCredential.user);
-        const url = `/account/create/${name}/${email}/${password}`;
+
+        const url = `/auth/account/create/${name}/${email}/${password}`;
         (async () => {
-        let res = await fetch(url);
+        let res = await fetch(url, {
+          method: 'POST'
+        });
         let data = await res.json();
         console.log(data);
         if (data.valid) {
           ctx.currentUser = {name, email, password, balance: 0};
           document.getElementById('navbarDropdown').innerHTML = name;
+          localStorage.setItem('token', data.token);
           setShow(false);
         } else {
-          setStatus('An error occured: ' + data.response);
+          setStatus('An error occured: ' + data.content);
         }
         })();
       })

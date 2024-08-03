@@ -1,5 +1,7 @@
 # Ignore the firebase.js file to protect my firebase configuration info
 /public/firebase.js
+# Ignore the jwt.js file to protect my secret key for Jason Web Token authentication
+/utils/jwt.js
 
 # Node.js dependencies
 node_modules/

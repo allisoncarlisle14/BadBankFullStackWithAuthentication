@@ -3,6 +3,7 @@ function NavBar() {
   const ctx = React.useContext(UserContext);
   
   function logout () {
+    localStorage.removeItem('token');
     ctx.currentUser = {name: "",
       email: "",
       password: "",

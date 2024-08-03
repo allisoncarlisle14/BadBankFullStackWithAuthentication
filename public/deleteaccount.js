@@ -17,6 +17,8 @@ function DeleteAccount() {
         setTimeout(() => setStatus(""), 5000);
         return false;
       } else if (email !== ctx.currentUser.email) {
+        console.log('email is ' + email);
+        console.log('ctx.currentUser.email is ' + ctx.currentUser.email)
         setStatus("Error: You must enter the email address associated with this account before proceeding.");
         setTimeout(() => setStatus(""), 5000);
         return false;
@@ -32,17 +34,31 @@ function DeleteAccount() {
     function handle() {
       setStatus("");
       if (!validate(email)) return;
-      setEmail("");
-      ctx.currentUser = {name: "",
-        email: "",
-        password: "",
-        balance: 0
-      };
-      const url = `/account/delete/${email}`;
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found.');
+        setStatus("Authentication error.")
+        return;
+      }
+    
+      const requestBody = {email: ctx.currentUser.email, token: token}
+      const url = `/auth/account/delete`;
+
       (async () => {
-        let res = await fetch(url);
+        let res = await fetch(url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(requestBody)
+        });
         let data = await res.json();
         if (data.valid) {
+          setEmail("");
+          ctx.currentUser = {name: "",
+            email: "",
+            password: "",
+            balance: 0
+          };
           setShow(false);
           console.log(data.response);
           const auth = firebase.auth();
@@ -62,14 +78,14 @@ function DeleteAccount() {
   
     function clearForm() {
       
-      firebase.auth().signOut()
-        .then ( () => {
-          console.log('Successfully signed out.');
-        })
-        .catch ( (error) => {
-          console.log('Error code: ' + error.code);
-          console.log('Error message: ' + error.message);
-        })
+      // firebase.auth().signOut()
+      //   .then ( () => {
+      //     console.log('Successfully signed out.');
+      //   })
+      //   .catch ( (error) => {
+      //     console.log('Error code: ' + error.code);
+      //     console.log('Error message: ' + error.message);
+      //   })
 
     }
   

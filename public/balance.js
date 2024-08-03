@@ -28,9 +28,23 @@ function Balance() {
   function handle() {
     setStatus("");
     if (!validate(email)) return;
-    const url = `/account/balance/${email}`;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found.');
+      setStatus("Authentication error.")
+      return;
+    }
+
+    const requestBody = {email: email, token: token}
+    const url = `/auth/account/balance`;
+
     (async () => {
-      let res = await fetch(url);
+      let res = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestBody)
+      });
       let data = await res.json();
       if (data.valid) {
         setName(data.name);

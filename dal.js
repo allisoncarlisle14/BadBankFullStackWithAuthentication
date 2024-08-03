@@ -31,19 +31,19 @@ async function create(name, email, password) {
   await customers.insertOne(doc);
   const newCustomer = await customers.find({ email }).toArray();
   console.log("Customer inserted", newCustomer);
-  return {valid: true, response: newCustomer}}
+  return {valid: true, content: newCustomer}}
   else {
-    return ({valid: false, response: 'A customer with that email address already exists!'})
+    return ({valid: false, content: 'A customer with that email address already exists!'})
   }
 }
 
 async function login(email, password) {
   const customerArray = await customers.find({ email, password }).toArray();
   if (customerArray.length === 0) {
-  return {valid: false, response: 'The email address and password you have entered are incorrect.'}}
+  return {valid: false, content: 'The email address and password you have entered are incorrect.'}}
   else {
     const customer = customerArray[0];
-    return ({valid: true, response: customer})
+    return ({valid: true, content: customer})
   }
 }
 
