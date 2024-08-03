@@ -69,11 +69,15 @@ function CreateAccount() {
       .then( (userCredential) => {
         console.log(userCredential.user); // console log Firebase user
 
+        // See MDN documentation https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
         (async function createData () {
           const url = `/auth/account/create/${name}/${email}/${password}`;
 
           try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+              method: 'GET'
+            });
             if (!response.ok) {
               throw new Error (`Response status: ${response.status}`);
             }

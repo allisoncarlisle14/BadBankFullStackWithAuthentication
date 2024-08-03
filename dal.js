@@ -21,18 +21,18 @@ async function main() {
   return "done.";
 }
 
-main().then(console.log).catch(console.error);
+main().then(console.log).catch(console.error)
 //.finally(() => client.close());
 
 async function create(name, email, password) {
   const doc = { name, email, password, balance: 0 };
   const customerArray = await customers.find({ email }).toArray();
   if (customerArray.length === 0) {
-  await customers.insertOne(doc);
-  const newCustomer = await customers.find({ email }).toArray();
-  console.log("Customer inserted", newCustomer[0]);
-  return {valid: true, content: newCustomer[0]}}
-  else {
+    await customers.insertOne(doc);
+    const newCustomer = await customers.find({ email }).toArray();
+    console.log("Customer inserted", newCustomer[0]);
+    return {valid: true, content: newCustomer[0]}
+  } else {
     return ({valid: false, content: 'A customer with that email address already exists!'})
   }
 }
@@ -40,8 +40,8 @@ async function create(name, email, password) {
 async function login(email, password) {
   const customerArray = await customers.find({ email, password }).toArray();
   if (customerArray.length === 0) {
-  return {valid: false, content: 'The email address and password you have entered are incorrect.'}}
-  else {
+  return {valid: false, content: 'The email address and password you have entered are incorrect.'}
+  } else {
     const customer = customerArray[0];
     return ({valid: true, content: customer})
   }
@@ -51,84 +51,75 @@ async function deposit(email, amount) {
   // updating customer's balance in the database
   const customerArray = await customers.find({ email }).toArray();
   if (customerArray.length === 0) {
-    return {valid: false, content: 'There is no account associated with that email address.'}}
-  else {
-  const customer = customerArray[0];
+    return {valid: false, content: 'There is no account associated with that email address.'}
+  } else {
+    const customer = customerArray[0];
+    const previousBalance = Number(customer.balance);
+    const newBalance = previousBalance + Number(amount);
 
-  const previousBalance = Number(customer.balance);
-
-  const newBalance = previousBalance + Number(amount);
-
-  await customers.updateOne({email}, {$set: {balance: newBalance}});
-
-  const updatedCustomerArray = await customers.find({ email }).toArray();
-  const updatedCustomer = updatedCustomerArray[0];
-  
-  // updating transactions in the database
-  const name = customer.name;
-  const transaction = {name, type: 'deposit', amount, newBalance};
-  await transactions.insertOne(transaction);
-  return {valid: true, content: updatedCustomer};
+    await customers.updateOne({email}, {$set: {balance: newBalance}});
+    const updatedCustomerArray = await customers.find({ email }).toArray();
+    const updatedCustomer = updatedCustomerArray[0];
+    
+    // updating transactions in the database
+    const name = customer.name;
+    const transaction = {name, type: 'deposit', amount, newBalance};
+    await transactions.insertOne(transaction);
+    return {valid: true, content: updatedCustomer};
   }
 }
 
 async function withdraw(email, amount) {
   const customerArray = await customers.find({ email }).toArray();
   if (customerArray.length === 0) {
-    return {valid: false, content: 'There is no account associated with that email address.'}}
-  else {
-  const customer = customerArray[0];
- 
-  const previousBalance = Number(customer.balance);
+    return {valid: false, content: 'There is no account associated with that email address.'}
+  } else {
+    const customer = customerArray[0];
+    const previousBalance = Number(customer.balance);
 
-  if (Number(amount) <= previousBalance) {
-  const newBalance = previousBalance - Number(amount);
+    if (Number(amount) <= previousBalance) {
+      const newBalance = previousBalance - Number(amount);
 
-  await customers.updateOne({email}, {$set: {balance: newBalance}});
-
-  const updatedCustomerArray = await customers.find({ email }).toArray();
-  const updatedCustomer = updatedCustomerArray[0];
- 
-  const name = customer.name;
-
-  const transaction = {name, type: 'withdraw', amount, newBalance};
-  await transactions.insertOne(transaction);
-
-  return {valid: true, content: updatedCustomer}
-}
-  else {
-    return "You can't withdraw more money than you have in your account!"
+      await customers.updateOne({email}, {$set: {balance: newBalance}});
+      const updatedCustomerArray = await customers.find({ email }).toArray();
+      const updatedCustomer = updatedCustomerArray[0];
+    
+      const name = customer.name;
+      const transaction = {name, type: 'withdraw', amount, newBalance};
+      await transactions.insertOne(transaction);
+      return {valid: true, content: updatedCustomer}
+    } else {
+      return "You can't withdraw more money than you have in your account!"
+    }
   }
-}
 }
 
 async function balance(email) {
   const customerArray = await customers.find({ email }).toArray();
   if (customerArray.length === 0) {
-    return {valid: false, response: 'There is no account associated with that email address.'}}
-  else {
-  const customer = customerArray[0];
-  console.log('the customer is' + JSON.stringify(customer));
-  const currentBalance = Number(customer.balance);
-  console.log('the current balance is $' + currentBalance);
-  return({valid: true, name: customer.name, balance: currentBalance})
+    return {valid: false, content: 'There is no account associated with that email address.'}
+  } else {
+    const customer = customerArray[0];
+    console.log('the customer is' + JSON.stringify(customer));
+    const currentBalance = Number(customer.balance);
+    console.log('the current balance is $' + currentBalance);
+    return({valid: true, name: customer.name, balance: currentBalance})
   };
 }
 
 async function deleteAccount(email) {
   const customerArray = await customers.find({ email }).toArray();
   if (customerArray.length === 0) {
-    return {valid: false, response: 'There is no account associated with that email address.'}}
-  else {
-  const customer = customerArray[0];
-  const balance = Number(customer.balance);
+    return {valid: false, content: 'There is no account associated with that email address.'}
+  } else {
+    const customer = customerArray[0];
+    const balance = Number(customer.balance);
 
-  if (balance === 0) {
-    await customers.deleteOne({email});
-    return {valid: true, response: "Success! Your account has been closed. We retain a record of your transaction history."}
-  }
-    else {
-      return {valid: false, response: "You must empty your account first!"}
+    if (balance === 0) {
+      await customers.deleteOne({email});
+      return {valid: true, content: "Success! Your account has been closed. We retain a record of your transaction history."}
+    } else {
+        return {valid: false, content: "You must empty your account first!"}
     }
   }
 }

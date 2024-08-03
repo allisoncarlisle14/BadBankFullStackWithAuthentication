@@ -58,7 +58,7 @@ function Balance() {
           setBalance(data.balance);
           setShow(false);
         } else {
-          setStatus('An error occured: ' + data.response); // think about a better naming convention for an error message than response on the back end? 
+          setStatus(data.content); // think about a better naming convention for an error message than response on the back end? 
         }
 
       } catch (error) {

@@ -75,6 +75,8 @@ function updateCtxCurrentUser (response) {
       .then( (userCredential) => {
         console.log(userCredential.user); // console log Firebase user
 
+        // See MDN documentation https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
         (async function getData () {
           const url = `/auth/account/login/${email}/${password}`;
 

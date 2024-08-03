@@ -80,9 +80,10 @@ function DeleteAccount() {
               console.error('Error message: ' + error.message); // error deleting user from Firebase
               });
           } else {
-              // no action required because console.log(data.response), below, will console log a message whether the data is valid or not.
+              setStatus(data.content); // "You must empty your account first!"
+              setTimeout(() => setStatus(""), 5000);
           }
-          console.log(data.response); // console log message from the server.
+          console.log(data.content); // console log message from the server.
         } catch (error) {
           console.error(error.message); // error communicating with the server.
         }
