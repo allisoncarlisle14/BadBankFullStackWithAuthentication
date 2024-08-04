@@ -8,7 +8,16 @@ A lot of the code was provided for me by MIT xPRO, but I added many extensions s
 #### Installation Guidlines: 
 * Create a project in Firebase (located at firebase.google.com) and add a web application with email/password authentication to it. 
 * Create a MongoDB and run it in Docker on port 27017.
-* git clone this repository
+* Create a root directory for your project on your computer and in a terminal window in the root directory for the project,type 
+
+```
+
+npm init
+
+```
+
+to initialize a Node.js project. 
+* git clone this repository into the root directory you created. 
 * I did not include two files because they contained confidential authentication information, so you will need to add these two files to your project: 
 * In the root directory of the project, create a utils folder with one file titled jwt.js. The content of that file should be:
 
@@ -56,7 +65,7 @@ Except you should replace INSERT_YOUR_SECRET_KEY_HERE with your own secret key (
 ```
 
 Except you should replace each instance of REPLACE WITH YOUR OWN with the values in your own Firebase configuration.   
-* In a terminal window, navigate to the root directory of the project you cloned from GitHub and type 
+* In a terminal window, navigate to the root directory of your project and type 
 
 ```
 
