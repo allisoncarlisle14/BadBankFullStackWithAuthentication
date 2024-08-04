@@ -87,7 +87,6 @@ This is what the application looks like after you've logged in as a regular user
 
 
 #### Technology used:
-Unordered List:-
 * React (not create-react-app) for the front end (client)
 * Express Node.js for the back end (server)
 * MongoDB for the database
@@ -103,7 +102,6 @@ N/A
 This project is for academic use only. The Bad Bank application allows users to create an account or log in with an existing account, at which point they can deposit or withdraw (fake) money from their account, check the balance of their account, delete their account, or log out of their account. There is also an administrative user who can see a list of all of the users and their account information, as well as a complete history of user transactions. (If the administrative user is signed in, another tab appears in the navigation bar called All Data.)
 
 #### Roadmap of Future Improvements: 
-Unordered List:-
 Here are some of the ways in which I would like to improve my project: 
 * Separate the back end into more individual files, for instance creating a routes folder containing auth.js, protected.js, and server.js, where auth.js contains the login and create account routes and protected.js contains the routes that require JWT's to access the database. The server.js file will import the two routers defined in those files. 
 * Separate the middleware authorization function properly in into its own file and pass JWT's in the header instead of in the body of the HTTP requests sent by the client. 
