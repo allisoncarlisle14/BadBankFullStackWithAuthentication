@@ -12,7 +12,8 @@ A lot of the code was provided for me by MIT xPRO, but I added many extensions s
 * I did not include two files because they contained confidential authentication information, so you will need to add these two files to your project: 
 * In the root directory of the project, create a utils folder with one file titled jwt.js. The content of that file should be:
 
-Code:-
+```
+
     const jwt = require('jsonwebtoken');
     const SECRET_KEY = 'INSERT_YOUR_SECRET_KEY_HERE'; // Replace with your secret key
 
@@ -30,44 +31,57 @@ Code:-
 
     module.exports = { generateToken, verifyToken };
 
+```
+
 Except you should replace INSERT_YOUR_SECRET_KEY_HERE with your own secret key (I think it can be whatever you want, but I'd recommend a long string of random characters because I'm assuming that's more secure than a shorter key).  
 
 * In the public directory of the project (or at least that's where my file is, although I'm questioning my choices now), create a file called firebase.js. The content of that file should be: 
 
-Code:-
-(function() {
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-    apiKey: "REPLACE WITH YOUR OWN",
-    authDomain: "REPLACE WITH YOUR OWN",
-    projectId: "REPLACE WITH YOUR OWN",
-    storageBucket: "REPLACE WITH YOUR OWN",
-    messagingSenderId: "REPLACE WITH YOUR OWN",
-    appId: "REPLACE WITH YOUR OWN"
-    };
+```
+    (function() {
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+        apiKey: "REPLACE WITH YOUR OWN",
+        authDomain: "REPLACE WITH YOUR OWN",
+        projectId: "REPLACE WITH YOUR OWN",
+        storageBucket: "REPLACE WITH YOUR OWN",
+        messagingSenderId: "REPLACE WITH YOUR OWN",
+        appId: "REPLACE WITH YOUR OWN"
+        };
 
-    firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
 
     }());
 
+```
+
 Except you should replace each instance of REPLACE WITH YOUR OWN with the values in your own Firebase configuration.   
-* In a terminal window, navigate to the root directory of the project you cloned from GitHub and type Code:-
+* In a terminal window, navigate to the root directory of the project you cloned from GitHub and type 
+
+```
+
     npm install 
+
+```
+
 in order to install all of the depenencies listed in the package.json file. 
 * Type 
-Code:-
+
+```
+
     npm start 
+
+```
+
 in the same terminal window to start up the application. 
 * Open up a browser and enter localhost:3000 in the url. The app should be working (hopefully).
 
 #### Screenshots:
 This is what the application looks like before you've logged in:
-![Alt](/Images/HomePageImage.png)
 
 ![Image](/Images/HomePageImage.png)
 
 This is what the application looks like after you've logged in as a regular user (and selected the deposit page):
-![Alt](/Images/DepositPageImage.png)
 
 ![Image](/Images/DepositPageImage.png)
 
