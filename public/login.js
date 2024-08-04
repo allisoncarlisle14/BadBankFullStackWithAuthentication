@@ -69,13 +69,15 @@ function updateCtxCurrentUser (response) {
     if (!validateEmail(email)) return;
     if (!validatePassword(password)) return;
 
-    // see authentication with Firebase lecture videos and https://firebase.google.com/docs/auth/web/password-auth
+    // see authentication with Firebase lecture videos and:
+    // https://firebase.google.com/docs/auth/web/password-auth
     const auth = firebase.auth();
     auth.signInWithEmailAndPassword(email, password)
       .then( (userCredential) => {
         console.log(userCredential.user); // console log Firebase user
 
-        // See MDN documentation https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+        // See MDN documentation:
+        // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 
         (async function getData () {
           const url = `/auth/account/login/${email}/${password}`;
@@ -96,7 +98,7 @@ function updateCtxCurrentUser (response) {
               localStorage.setItem('token', data.token);
               setShow(false);
             } else {
-              setStatus('An error occurred: ' + data.content) // maybe come up with a different name than content on the back end?
+              setStatus('An error occurred: ' + data.content) 
               setTimeout(() => setStatus(""), 5000);
             }
           } catch (error) {

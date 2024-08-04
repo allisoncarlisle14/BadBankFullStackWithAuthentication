@@ -6,7 +6,7 @@ var dal = require("./dal.js");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
-const { generateToken, verifyToken } = require("./utils/jwt.js");
+const { generateToken, verifyToken } = require("./jwtWithAmazonSecretManager.js");
 
 // Never got this authMiddleware function to work. Would like to as an improvement.
 // Would also like to add authorization for different roles. So most people will be users, and then admins can access the account/all and transactions/all routes
@@ -55,9 +55,7 @@ router.get("/account/login/:email/:password", async function (req, res) {
   // Generating a Json Web Token using the customer's id in the database
   if (response.valid) {
     const token = generateToken({ ID: response.content._id });
-    response.token = token;
-
-    
+    response.token = token; 
   }
   // res.send(response);
   res.json(response);

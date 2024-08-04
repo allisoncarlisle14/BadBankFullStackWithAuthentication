@@ -36,7 +36,8 @@ function Deposit() {
       return;
     }
 
-    // See MDN documentation https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+    // See MDN documentation 
+    // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 
     (async function updateData () {
       const requestBody = {email: ctx.currentUser.email, amount: numberDeposit, token: token}
